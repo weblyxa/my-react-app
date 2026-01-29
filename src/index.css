@@ -1,0 +1,51 @@
+/* ===== GLOBAL STYLES ===== */
+:root {
+  font-family: 'Poppins', sans-serif;
+  --primary: #1ec9b7;
+  --dark: #0f172a;
+  --gray: #64748b;
+  --light: #f8fafc;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--light);
+  color: var(--dark);
+  line-height: 1.5;
+  font-weight: 400;
+  min-height: 100vh;
+}
+
+/* Links */
+a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+button:hover {
+  opacity: 0.85;
+}
