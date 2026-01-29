@@ -1,97 +1,135 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import logo from "../assets/weblyxa--png-.png";
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [dark, setDark] = useState(false);
+
+  useEffect(() => {
+    if (dark) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [dark]);
 
   return (
     <header className="wb-navbar">
-      {/* Logo */}
-      <Link to="/" className="wb-logo-wrap">
-        <img src={logo} alt="Weblyxa Logo" className="wb-logo-img" />
-        <span className="wb-logo-text">Weblyxa</span>
+      {/* BRAND */}
+      <Link to="/" className="wb-brand">
+        <motion.img
+          src={logo}
+          alt="Weblyxa"
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          whileHover={{ scale: 1.15 }}
+        />
+        <span>Weblyxa</span>
       </Link>
 
-      {/* Hamburger */}
-      <div
-        className="wb-hamburger"
-        onClick={() => setMenuOpen(!menuOpen)}
-      >
-        <span></span>
-        <span></span>
-        <span></span>
+      {/* HAMBURGER */}
+      <div className={`wb-menu ${open ? "open" : ""}`} onClick={() => setOpen(!open)}>
+        <span></span><span></span><span></span>
       </div>
 
-      {/* Nav */}
-      <nav className={`wb-nav ${menuOpen ? "wb-open" : ""}`}>
+      {/* NAV */}
+      <nav className={`wb-nav ${open ? "show" : ""}`}>
         {["Home", "Services", "About", "Career", "Contact"].map((item) => (
           <Link
             key={item}
             to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+            onClick={() => setOpen(false)}
             className="wb-nav-link"
-            onClick={() => setMenuOpen(false)}
           >
             {item}
           </Link>
         ))}
+
+        <Link to="/contact" className="wb-cta">Get Quote</Link>
+
+        <button className="dark-btn" onClick={() => setDark(!dark)}>
+          {dark ? "☀️" : "🌙"}
+        </button>
       </nav>
 
+      {/* Styles */}
       <style>{`
-        /* ===== NAVBAR WRAPPER ===== */
-        .wb-navbar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 16px 60px;
-          background: #ffffff;
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-          box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+        body {
+          margin: 0;
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* ===== LOGO ===== */
-        .wb-logo-wrap {
+        body.dark {
+          background: #020617;
+          color: #e5e7eb;
+        }
+
+        /* NAVBAR */
+        .wb-navbar {
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          padding: 16px 60px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          backdrop-filter: blur(12px);
+          background: rgba(255,255,255,0.85);
+          box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        body.dark .wb-navbar {
+          background: rgba(2,6,23,0.85);
+        }
+
+        /* BRAND */
+        .wb-brand {
           display: flex;
           align-items: center;
           gap: 10px;
           text-decoration: none;
         }
 
-        .wb-logo-img {
+        .wb-brand img {
           height: 42px;
         }
 
-        .wb-logo-text {
-          font-size: 24px;
+        .wb-brand span {
+          font-size: 26px;
           font-weight: 800;
-          letter-spacing: 1px;
-          background: linear-gradient(135deg, #14b8a6, #1ec9b7);
+          background: linear-gradient(135deg,#14b8a6,#22d3ee);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
 
-        /* ===== NAV LINKS ===== */
+        /* NAV LINKS */
         .wb-nav {
           display: flex;
-          gap: 30px;
+          align-items: center;
+          gap: 26px;
         }
 
         .wb-nav-link {
+          position: relative;
           text-decoration: none;
           color: #334155;
           font-weight: 500;
-          position: relative;
+          padding: 4px 0;
         }
 
+        body.dark .wb-nav-link {
+          color: #e5e7eb;
+        }
+
+        /* Underline animation */
         .wb-nav-link::after {
           content: "";
           position: absolute;
           left: 0;
-          bottom: -5px;
-          width: 0;
+          bottom: 0;
+          width: 0%;
           height: 2px;
           background: #14b8a6;
           transition: width 0.3s ease;
@@ -101,56 +139,59 @@ const Navbar = () => {
           width: 100%;
         }
 
-        /* ===== HAMBURGER ===== */
-        .wb-hamburger {
+        /* CTA */
+        .wb-cta {
+          padding: 10px 22px;
+          border-radius: 30px;
+          background: linear-gradient(135deg,#14b8a6,#22d3ee);
+          color: white !important;
+          font-weight: 600;
+          box-shadow: 0 8px 22px rgba(20,184,166,0.35);
+          text-decoration: none;
+        }
+
+        /* DARK BUTTON */
+        .dark-btn {
+          border: none;
+          background: none;
+          font-size: 20px;
+          cursor: pointer;
+          margin-left: 10px;
+        }
+
+        /* MENU */
+        .wb-menu {
           display: none;
           flex-direction: column;
-          gap: 5px;
+          gap: 6px;
           cursor: pointer;
         }
 
-        .wb-hamburger span {
+        .wb-menu span {
           width: 26px;
           height: 3px;
-          background: #334155;
+          background: currentColor;
           border-radius: 10px;
         }
 
-        /* ===== MOBILE ===== */
-        @media (max-width: 768px) {
-          .wb-navbar {
-            padding: 14px 24px;
-          }
-
-          .wb-hamburger {
-            display: flex;
-          }
+        @media (max-width:768px) {
+          .wb-menu { display: flex; }
 
           .wb-nav {
             position: absolute;
-            top: 70px;
+            top: 75px;
             left: 0;
             width: 100%;
-            background: #ffffff;
             flex-direction: column;
-            align-items: center;
-            gap: 22px;
-            padding: 25px 0;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            background: inherit;
+            padding: 24px 0;
             transform: translateY(-120%);
-            transition: transform 0.4s ease;
+            transition: 0.4s;
+            gap: 20px;
           }
 
-          .wb-nav.wb-open {
+          .wb-nav.show {
             transform: translateY(0);
-          }
-
-          .wb-logo-img {
-            height: 36px;
-          }
-
-          .wb-logo-text {
-            font-size: 20px;
           }
         }
       `}</style>
