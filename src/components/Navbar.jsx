@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import logo from "../assets/weblyxa--png-.png";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { BsSun, BsMoonStars } from "react-icons/bs"; // Icons for Dark Mode
+import logo from "../assets/weblyxa--png-.png"; 
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(false);
 
+  // 1. Dark Mode Logic
   useEffect(() => {
     if (dark) {
       document.body.classList.add("dark");
@@ -15,183 +18,296 @@ const Navbar = () => {
     }
   }, [dark]);
 
+  // 2. Scroll Detection
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="wb-navbar">
+    <header className={`wb-navbar ${scrolled ? "scrolled" : ""}`}>
       {/* BRAND */}
       <Link to="/" className="wb-brand">
-        <motion.img
-          src={logo}
-          alt="Weblyxa"
-          animate={{ y: [0, -6, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          whileHover={{ scale: 1.15 }}
-        />
-        <span>Weblyxa</span>
+        <div className="logo-wrapper">
+          <img src={logo} alt="Weblyxa" />
+        </div>
+        <span className="brand-text">Weblyxa</span>
       </Link>
 
-      {/* HAMBURGER */}
-      <div className={`wb-menu ${open ? "open" : ""}`} onClick={() => setOpen(!open)}>
-        <span></span><span></span><span></span>
-      </div>
-
-      {/* NAV */}
-      <nav className={`wb-nav ${open ? "show" : ""}`}>
-        {["Home", "Services", "About", "Career", "Contact"].map((item) => (
+      {/* NAV LINKS */}
+      <nav className={`wb-nav ${open ? "mobile-open" : ""}`}>
+        {["Home", "Services", "About", "Career"].map((item) => (
           <Link
             key={item}
             to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+            className="nav-link"
             onClick={() => setOpen(false)}
-            className="wb-nav-link"
           >
             {item}
+            <span className="hover-dot"></span>
           </Link>
         ))}
 
-        <Link to="/contact" className="wb-cta">Get Quote</Link>
+        {/* CTA BUTTON */}
+        <Link to="/contact" className="wb-cta-btn" onClick={() => setOpen(false)}>
+          <span>Get Quote</span>
+          <div className="liquid"></div>
+        </Link>
 
-        <button className="dark-btn" onClick={() => setDark(!dark)}>
-          {dark ? "☀️" : "🌙"}
+        {/* DARK MODE TOGGLE (Mobile mein bhi dikhega) */}
+        <button className="theme-toggle" onClick={() => setDark(!dark)}>
+          {dark ? <BsSun className="sun-icon" /> : <BsMoonStars className="moon-icon" />}
         </button>
+        
+        {/* CLOSE BTN (Mobile) */}
+        <div className="mobile-close" onClick={() => setOpen(false)}>
+            <FaTimes />
+        </div>
       </nav>
 
-      {/* Styles */}
+      {/* HAMBURGER */}
+      <div className="wb-hamburger" onClick={() => setOpen(!open)}>
+        <FaBars />
+      </div>
+
+      {/* CSS STYLES */}
       <style>{`
-        body {
-          margin: 0;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body.dark {
-          background: #020617;
-          color: #e5e7eb;
-        }
-
-        /* NAVBAR */
+        /* --- NAVBAR BASE --- */
         .wb-navbar {
-          position: sticky;
+          position: fixed;
           top: 0;
-          z-index: 1000;
-          padding: 16px 60px;
+          left: 0;
+          width: 100%;
+          padding: 20px 8%;
           display: flex;
           justify-content: space-between;
           align-items: center;
-          backdrop-filter: blur(12px);
-          background: rgba(255,255,255,0.85);
-          box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+          z-index: 9999;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          background: transparent;
         }
 
-        body.dark .wb-navbar {
-          background: rgba(2,6,23,0.85);
+        /* LIGHT MODE GLASS */
+        .wb-navbar.scrolled {
+          padding: 12px 8%;
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+          border-bottom: 1px solid rgba(255,255,255,0.5);
         }
 
-        /* BRAND */
+        /* DARK MODE GLASS (Home Theme Color) */
+        body.dark .wb-navbar.scrolled {
+          background: rgba(3, 0, 20, 0.7); /* Deep Space Dark */
+          border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* --- BRAND --- */
         .wb-brand {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
           text-decoration: none;
         }
 
-        .wb-brand img {
-          height: 42px;
+        .logo-wrapper img {
+          height: 40px;
+          transition: transform 0.5s;
         }
 
-        .wb-brand span {
-          font-size: 26px;
+        .wb-brand:hover .logo-wrapper img {
+          transform: rotate(15deg) scale(1.1);
+        }
+
+        .brand-text {
+          font-size: 1.6rem;
           font-weight: 800;
-          background: linear-gradient(135deg,#14b8a6,#22d3ee);
+          color: #1a1a1a;
+          /* Shimmer Text */
+          background: linear-gradient(to right, #1a1a1a 20%, #3b82f6 50%, #1a1a1a 80%);
+          background-size: 200% auto;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: shimmerText 5s infinite linear;
+        }
+
+        body.dark .brand-text {
+          /* Gold/White Shimmer for Dark Mode */
+          background: linear-gradient(to right, #ffffff 20%, #ffd700 50%, #ffffff 80%);
+          background-clip: text;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
 
-        /* NAV LINKS */
+        @keyframes shimmerText {
+          to { background-position: 200% center; }
+        }
+
+        /* --- NAV LINKS --- */
         .wb-nav {
           display: flex;
           align-items: center;
-          gap: 26px;
+          gap: 30px;
         }
 
-        .wb-nav-link {
-          position: relative;
+        .nav-link {
           text-decoration: none;
-          color: #334155;
-          font-weight: 500;
-          padding: 4px 0;
-        }
-
-        body.dark .wb-nav-link {
-          color: #e5e7eb;
-        }
-
-        /* Underline animation */
-        .wb-nav-link::after {
-          content: "";
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          width: 0%;
-          height: 2px;
-          background: #14b8a6;
-          transition: width 0.3s ease;
-        }
-
-        .wb-nav-link:hover::after {
-          width: 100%;
-        }
-
-        /* CTA */
-        .wb-cta {
-          padding: 10px 22px;
-          border-radius: 30px;
-          background: linear-gradient(135deg,#14b8a6,#22d3ee);
-          color: white !important;
+          color: #4b5563;
           font-weight: 600;
-          box-shadow: 0 8px 22px rgba(20,184,166,0.35);
-          text-decoration: none;
+          font-size: 1rem;
+          position: relative;
+          padding: 5px 0;
+          transition: 0.3s;
         }
 
-        /* DARK BUTTON */
-        .dark-btn {
+        body.dark .nav-link { color: #cbd5e1; }
+
+        .nav-link:hover {
+          color: #2563eb;
+          transform: translateY(-2px);
+        }
+        
+        body.dark .nav-link:hover { color: #60a5fa; }
+
+        /* Dot Animation */
+        .hover-dot {
+          position: absolute;
+          bottom: -5px;
+          left: 50%;
+          transform: translateX(-50%) scale(0);
+          width: 6px;
+          height: 6px;
+          background: #2563eb;
+          border-radius: 50%;
+          transition: transform 0.3s;
+          box-shadow: 0 0 10px #2563eb;
+        }
+
+        .nav-link:hover .hover-dot {
+          transform: translateX(-50%) scale(1);
+        }
+
+        /* --- TOGGLE BUTTON (Sun/Moon) --- */
+        .theme-toggle {
+          background: rgba(0,0,0,0.05);
           border: none;
-          background: none;
-          font-size: 20px;
           cursor: pointer;
-          margin-left: 10px;
+          padding: 10px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.2rem;
+          transition: 0.3s;
+          color: #1a1a1a;
         }
 
-        /* MENU */
-        .wb-menu {
+        body.dark .theme-toggle {
+          background: rgba(255,255,255,0.1);
+          color: #fbbf24; /* Sun Yellow */
+        }
+
+        .theme-toggle:hover {
+          transform: rotate(20deg) scale(1.1);
+          background: rgba(0,0,0,0.1);
+        }
+        
+        body.dark .theme-toggle:hover {
+          background: rgba(255,255,255,0.2);
+          box-shadow: 0 0 15px #fbbf24;
+        }
+
+        /* --- GLOWING CTA BUTTON --- */
+        .wb-cta-btn {
+          position: relative;
+          padding: 10px 24px;
+          background: #1a1a1a;
+          color: white;
+          text-decoration: none;
+          font-weight: 700;
+          border-radius: 30px;
+          overflow: hidden;
+          transition: 0.4s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        body.dark .wb-cta-btn {
+          background: white;
+          color: #1a1a1a;
+        }
+
+        .wb-cta-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        body.dark .wb-cta-btn:hover {
+           box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Liquid animation inside button */
+        .liquid {
+          position: absolute;
+          top: 0; left: -100%;
+          width: 100%; height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: 0.5s;
+        }
+        .wb-cta-btn:hover .liquid { left: 100%; }
+
+        /* --- MOBILE MENU --- */
+        .wb-hamburger {
           display: none;
-          flex-direction: column;
-          gap: 6px;
+          font-size: 1.5rem;
           cursor: pointer;
+          color: #1a1a1a;
         }
+        
+        body.dark .wb-hamburger { color: white; }
 
-        .wb-menu span {
-          width: 26px;
-          height: 3px;
-          background: currentColor;
-          border-radius: 10px;
-        }
+        .mobile-close { display: none; }
 
-        @media (max-width:768px) {
-          .wb-menu { display: flex; }
+        @media (max-width: 900px) {
+          .wb-hamburger { display: block; }
 
           .wb-nav {
-            position: absolute;
-            top: 75px;
-            left: 0;
-            width: 100%;
+            position: fixed;
+            top: 0; right: 0;
+            width: 80%;
+            height: 100vh;
+            /* Light/Dark Mobile Background */
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
             flex-direction: column;
-            background: inherit;
-            padding: 24px 0;
-            transform: translateY(-120%);
-            transition: 0.4s;
-            gap: 20px;
+            justify-content: center;
+            transform: translateX(100%);
+            transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            gap: 25px;
+          }
+          
+          body.dark .wb-nav {
+             background: #030014; /* Dark Mobile Bg */
           }
 
-          .wb-nav.show {
-            transform: translateY(0);
+          .wb-nav.mobile-open { transform: translateX(0); }
+          .nav-link { font-size: 1.4rem; }
+          
+          .mobile-close {
+            display: block;
+            position: absolute;
+            top: 30px; right: 30px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #ef4444;
           }
         }
       `}</style>

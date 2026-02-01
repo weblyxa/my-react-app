@@ -4,225 +4,279 @@ import {
   FaInstagram,
   FaLinkedinIn,
   FaTwitter,
+  FaPaperPlane
 } from "react-icons/fa";
 
 const Footer = () => {
-  const accentColor = "#00acc1";
-
   return (
-    <footer className="footer">
+    <footer className="footer-wrapper">
+      {/* ANIMATED BACKGROUND BLOBS (Aurora) */}
+      <div className="footer-blob blob-1"></div>
+      <div className="footer-blob blob-2"></div>
+
       <div className="footer-container">
-        {/* Logo */}
-        <div className="footer-col">
-          <h2 className="logo">Weblyxa</h2>
-          <p className="desc">
-            We craft digital experiences that elevate your brand and help your
-            business grow online.
+        
+        {/* COL 1: BRAND */}
+        <div className="footer-col brand-col">
+          <h2 className="footer-logo">
+            Weblyxa<span className="dot">.</span>
+          </h2>
+          <p className="footer-desc">
+            We craft digital masterpieces. Turning complex ideas into 
+            stunning, high-performance websites that grow your business.
           </p>
+          
+          <div className="newsletter-box">
+            <input type="email" placeholder="Enter your email" />
+            <button aria-label="Subscribe"><FaPaperPlane /></button>
+          </div>
         </div>
 
-        {/* Quick Links */}
+        {/* COL 2: EXPLORE */}
         <div className="footer-col">
-          <h3>Quick Links</h3>
-          {["Home", "About", "Services", "Contact"].map((link, i) => (
-            <a key={i} href={`/#${link.toLowerCase()}`} className="footer-link">
-              {link}
-              <span className="underline"></span>
-            </a>
-          ))}
+          <h3>Explore</h3>
+          <ul className="footer-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
         </div>
 
-        {/* Contact */}
+        {/* COL 3: CONTACT */}
         <div className="footer-col">
-          <h3>Contact</h3>
-          <p>📍 New Delhi</p>
-          <p>
-            📧{" "}
-            <a href="mailto:contact@weblyxa.in" className="accent">
-              contact@weblyxa.in
-            </a>
-          </p>
-          <p>
-            📞{" "}
-            <a href="tel:8516012270" className="accent">
-              +91 8516012270
-            </a>
-          </p>
+          <h3>Get in Touch</h3>
+          <ul className="contact-list">
+            <li>New Delhi, India</li>
+            <li><a href="mailto:hello@weblyxa.in">hello@weblyxa.in</a></li>
+            <li><a href="tel:+918516012270">+91 85160 12270</a></li>
+          </ul>
         </div>
 
-        {/* Social */}
+        {/* COL 4: SOCIALS */}
         <div className="footer-col">
           <h3>Follow Us</h3>
-          <div className="socials">
-            {[FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter].map(
-              (Icon, i) => (
-                <span key={i} className="icon">
-                  <Icon />
-                </span>
-              )
-            )}
+          <div className="social-grid">
+            <a href="#" className="social-icon fb"><FaFacebookF /></a>
+            <a href="#" className="social-icon insta"><FaInstagram /></a>
+            <a href="#" className="social-icon linkedin"><FaLinkedinIn /></a>
+            <a href="#" className="social-icon tw"><FaTwitter /></a>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        © 2026{" "}
-        <a href="https://www.weblyxa.com" className="accent">
-          Weblyxa
-        </a>
-        . All Rights Reserved.
+        <p>© 2026 Weblyxa Agency. Made with 💙 in India.</p>
       </div>
 
-      {/* CSS */}
+      {/* STYLES */}
       <style>{`
-        .footer {
-          background: #f9fafb;
-          padding: 60px 20px 30px;
-          border-top: 2px solid #eaeaea;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          color: #333;
-          transition: all 0.3s ease;
+        /* --- FOOTER CONTAINER (Always Dark) --- */
+        .footer-wrapper {
+          position: relative;
+          background: #0f172a; /* Deep Navy from Home Theme */
+          color: #e2e8f0;
+          padding: 6rem 8% 2rem;
+          overflow: hidden;
+          font-family: 'Inter', sans-serif;
+          /* Modern curve separating body from footer */
+          border-top-left-radius: 60px; 
+          border-top-right-radius: 60px;
+          margin-top: 0;
         }
 
-        body.dark .footer {
-          background: #020617;
-          color: #e5e7eb;
-          border-top-color: #333;
+        /* Dark Mode Body Fix: Ensure contrast if body is also dark */
+        body.dark .footer-wrapper {
+          border-top: 1px solid rgba(255,255,255,0.05);
+          background: #020617; /* Slightly darker in dark mode */
+        }
+
+        /* --- AURORA ANIMATION --- */
+        .footer-blob {
+          position: absolute;
+          width: 500px;
+          height: 500px;
+          border-radius: 50%;
+          filter: blur(90px);
+          opacity: 0.15;
+          z-index: 0;
+          animation: blobFloat 10s infinite alternate;
+        }
+        
+        .blob-1 { top: -200px; left: -100px; background: #3b82f6; } /* Premium Blue */
+        .blob-2 { bottom: -200px; right: -100px; background: #a855f7; animation-delay: 5s; } /* Purple */
+
+        @keyframes blobFloat {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(40px, 40px); }
         }
 
         .footer-container {
-          max-width: 1200px;
-          margin: auto;
+          position: relative;
+          z-index: 1;
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 40px;
+          grid-template-columns: 1.8fr 1fr 1fr 1fr;
+          gap: 4rem;
         }
 
-        .footer-col h3 {
-          font-size: 16px;
-          margin-bottom: 15px;
-          color: #333;
+        /* --- TYPOGRAPHY --- */
+        .footer-logo {
+          font-size: 2.5rem;
+          font-weight: 800;
+          color: white;
+          margin-bottom: 1rem;
         }
 
-        body.dark .footer-col h3 {
-          color: #e5e7eb;
+        .dot { color: #3b82f6; }
+
+        .footer-desc {
+          color: #94a3b8;
+          line-height: 1.7;
+          margin-bottom: 2rem;
+          font-size: 1rem;
+          max-width: 90%;
         }
 
-        .logo {
-          font-size: 28px;
-          font-weight: bold;
-          color: ${accentColor};
-          margin-bottom: 10px;
+        h3 {
+          color: white;
+          font-size: 1.2rem;
+          margin-bottom: 1.5rem;
+          font-weight: 700;
+          letter-spacing: 0.5px;
         }
 
-        .desc {
-          font-size: 14px;
-          color: #555;
-          line-height: 1.6;
-        }
-
-        body.dark .desc {
-          color: #ccc;
-        }
-
-        .footer-col a,
-        .footer-col p {
-          display: block;
-          font-size: 14px;
-          color: #555;
-          text-decoration: none;
-          margin-bottom: 10px;
-          position: relative;
-        }
-
-        body.dark .footer-col a,
-        body.dark .footer-col p {
-          color: #ccc;
-        }
-
-        .footer-col a:hover {
-          color: ${accentColor};
-        }
-
-        /* Hover underline animation for links */
-        .footer-link {
-          position: relative;
-          display: inline-block;
-        }
-
-        .footer-link .underline {
-          position: absolute;
-          left: 0;
-          bottom: -2px;
-          width: 0%;
-          height: 2px;
-          background: ${accentColor};
-          transition: width 0.3s ease;
-        }
-
-        .footer-link:hover .underline {
-          width: 100%;
-        }
-
-        .accent {
-          color: ${accentColor};
-          text-decoration: none;
-        }
-
-        .socials {
+        /* --- NEWSLETTER INPUT --- */
+        .newsletter-box {
           display: flex;
-          gap: 15px;
-          margin-top: 10px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 50px;
+          padding: 6px;
+          max-width: 380px;
+          transition: 0.3s;
+        }
+        
+        .newsletter-box:focus-within {
+          border-color: #3b82f6;
+          box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+        
+        .newsletter-box input {
+          flex: 1;
+          background: transparent;
+          border: none;
+          padding: 10px 20px;
+          color: white;
+          outline: none;
+          font-size: 0.95rem;
         }
 
-        .icon {
-          width: 38px;
-          height: 38px;
-          background: ${accentColor};
-          color: #fff;
+        .newsletter-box button {
+          background: linear-gradient(135deg, #3b82f6, #2563eb);
+          color: white;
+          border: none;
+          width: 45px;
+          height: 45px;
           border-radius: 50%;
+          cursor: pointer;
+          transition: 0.3s;
           display: flex;
           align-items: center;
           justify-content: center;
-          cursor: pointer;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          font-size: 1.1rem;
         }
 
-        .icon:hover {
-          transform: scale(1.2);
-          box-shadow: 0 4px 15px ${accentColor}55;
+        .newsletter-box button:hover {
+          transform: scale(1.1);
+          box-shadow: 0 0 15px #3b82f6;
         }
 
+        /* --- LINKS --- */
+        .footer-links, .contact-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .footer-links li, .contact-list li {
+          margin-bottom: 14px;
+        }
+
+        .footer-links a, .contact-list a {
+          color: #94a3b8;
+          text-decoration: none;
+          transition: 0.3s;
+          display: inline-block;
+          font-size: 0.95rem;
+        }
+
+        .contact-list li { color: #94a3b8; font-size: 0.95rem; }
+
+        .footer-links a:hover {
+          color: #3b82f6;
+          transform: translateX(8px);
+        }
+        
+        .contact-list a:hover { color: white; }
+
+        /* --- SOCIAL ICONS (Super Spin) --- */
+        .social-grid {
+          display: flex;
+          gap: 15px;
+        }
+
+        .social-icon {
+          width: 45px;
+          height: 45px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 1.2rem;
+          transition: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        /* Brand Colors on Hover */
+        .social-icon.fb:hover { background: #1877f2; border-color: #1877f2; }
+        .social-icon.insta:hover { background: #e4405f; border-color: #e4405f; }
+        .social-icon.linkedin:hover { background: #0a66c2; border-color: #0a66c2; }
+        .social-icon.tw:hover { background: #1da1f2; border-color: #1da1f2; }
+
+        .social-icon:hover {
+          transform: translateY(-8px) rotate(360deg);
+          box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* --- BOTTOM BAR --- */
         .footer-bottom {
-          margin-top: 50px;
-          padding-top: 20px;
+          margin-top: 5rem;
+          padding-top: 2rem;
+          border-top: 1px solid rgba(255,255,255,0.05);
           text-align: center;
-          border-top: 1px solid #eaeaea;
-          font-size: 14px;
-          color: #555;
+          color: #64748b;
+          font-size: 0.9rem;
         }
 
-        body.dark .footer-bottom {
-          border-top-color: #333;
-          color: #ccc;
-        }
-
-        /* ================= MOBILE ================= */
-        @media (max-width: 900px) {
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
           .footer-container {
-            grid-template-columns: repeat(2, 1fr);
+             grid-template-columns: 1fr 1fr;
+             gap: 3rem;
           }
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
+          .footer-wrapper { padding: 4rem 6% 2rem; }
           .footer-container {
-            grid-template-columns: 1fr;
-            text-align: center;
+             grid-template-columns: 1fr;
+             text-align: center;
           }
-
-          .socials {
-            justify-content: center;
-          }
+          .newsletter-box { margin: 0 auto; }
+          .social-grid { justify-content: center; }
+          .footer-links a:hover { transform: none; color: #3b82f6; }
         }
       `}</style>
     </footer>
