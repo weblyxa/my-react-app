@@ -10,12 +10,7 @@ const THEME_KEY = "weblyxa-theme";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [dark, setDark] = useState(() => {
-    const storedTheme = localStorage.getItem(THEME_KEY);
-    if (storedTheme === "dark") return true;
-    if (storedTheme === "light") return false;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+  const [dark, setDark] = useState(false);
 
   // 1. Dark Mode Logic (global + persistent across pages)
   useEffect(() => {
