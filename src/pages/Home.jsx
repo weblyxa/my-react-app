@@ -189,10 +189,14 @@ const Home = () => {
           transform: rotateY(0deg) rotateX(0deg) scale(1);
         }
 
-        .hero-img {
+        .hero-video {
           width: 100%;
-          border-radius: 18px;
+          height: auto;
+          aspect-ratio: 16/9;
+          object-fit: cover;
+          border-radius: 14px;
           display: block;
+          border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         /* --- SERVICES --- */
@@ -366,11 +370,14 @@ const Home = () => {
 
           <div className="hero-img-wrapper" data-aos="fade-up" data-aos-delay="200">
             <div className="glass-card">
-              <img 
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
-                alt="Premium Workspace" 
-                className="hero-img"
-              />
+              <video 
+                src="/weblyxa-intro.mp4" 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                className="hero-video"
+              ></video>
             </div>
           </div>
         </section>

@@ -407,11 +407,11 @@ const Contact = () => {
             </div>
 
             {/* Click to Copy Card: Email */}
-            <div className="info-card" onClick={() => handleCopy("hello@weblyxa.com", "email")}>
+            <div className="info-card" onClick={() => handleCopy("weblyxa@gmail.com", "email")}>
               <div className="icon-circle"><FaEnvelope /></div>
               <div className="info-content">
                 <h4>Email Us</h4>
-                <p>hello@weblyxa.com</p>
+                <p>weblyxa@gmail.com</p>
               </div>
               <FaRegCopy className="copy-icon" />
               {copied === "email" && <span className="copied-tooltip"><FaCheck/> Copied!</span>}
