@@ -21,16 +21,47 @@ const Contact = () => {
     message: "",
   });
 
+  const [status, setStatus] = useState("");
+
   // State for "Copied" tooltip
   const [copied, setCopied] = useState("");
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Message sent successfully! We will contact you shortly.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setStatus("Sending...");
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/weblyxa@gmail.com", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: `New Contact Form Submission from ${formData.name}`,
+          Name: formData.name,
+          Email: formData.email,
+          Subject: formData.subject || "No subject",
+          Message: formData.message
+        })
+      });
+
+      if (response.ok) {
+        setStatus("Sent!");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        setTimeout(() => setStatus(""), 4000);
+      } else {
+        setStatus("Error. Try again.");
+        setTimeout(() => setStatus(""), 4000);
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus("Error. Try again.");
+      setTimeout(() => setStatus(""), 4000);
+    }
   };
 
   // Function to copy text to clipboard
@@ -488,8 +519,8 @@ const Contact = () => {
                 ></textarea>
               </div>
 
-              <button type="submit" className="form-btn">
-                Send Message <FaPaperPlane />
+              <button type="submit" className="form-btn" disabled={status === "Sending..."}>
+                {status === "Sending..." ? "Sending..." : status === "Sent!" ? "Message Sent!" : status === "Error. Try again." ? "Error!" : "Send Message"} <FaPaperPlane />
                 <div className="liquid"></div>
               </button>
             </form>
