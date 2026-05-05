@@ -2,20 +2,26 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { BsSun, BsMoonStars } from "react-icons/bs"; // Icons for Dark Mode
-import logo from "../assets/weblyxa--png-.png"; 
+import lightLogo from "../assets/weblyxa-logo-light.png";
+import darkLogo from "../assets/weblyxa-logo-dark.png";
+
+const THEME_KEY = "weblyxa-theme";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => {
+    const storedTheme = localStorage.getItem(THEME_KEY);
+    if (storedTheme === "dark") return true;
+    if (storedTheme === "light") return false;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
 
-  // 1. Dark Mode Logic
+  // 1. Dark Mode Logic (global + persistent across pages)
   useEffect(() => {
-    if (dark) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
+    document.body.classList.toggle("dark", dark);
+    document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
   }, [dark]);
 
   // 2. Scroll Detection
@@ -32,9 +38,12 @@ const Navbar = () => {
       {/* BRAND */}
       <Link to="/" className="wb-brand">
         <div className="logo-wrapper">
-          <img src={logo} alt="Weblyxa" />
+          <img
+            src={dark ? darkLogo : lightLogo}
+            alt="Weblyxa logo"
+            className="logo-img"
+          />
         </div>
-        <span className="brand-text">Weblyxa</span>
       </Link>
 
       {/* NAV LINKS */}
@@ -58,7 +67,12 @@ const Navbar = () => {
         </Link>
 
         {/* DARK MODE TOGGLE (Mobile mein bhi dikhega) */}
-        <button className="theme-toggle" onClick={() => setDark(!dark)}>
+        <button
+          className="theme-toggle"
+          onClick={() => setDark((prev) => !prev)}
+          aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+          title={dark ? "Switch to light mode" : "Switch to dark mode"}
+        >
           {dark ? <BsSun className="sun-icon" /> : <BsMoonStars className="moon-icon" />}
         </button>
         
@@ -110,42 +124,31 @@ const Navbar = () => {
         .wb-brand {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 0;
           text-decoration: none;
         }
 
-        .logo-wrapper img {
-          height: 40px;
-          transition: transform 0.5s;
+        .logo-wrapper {
+          width: 236px;
+          height: 64px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
         }
 
-        .wb-brand:hover .logo-wrapper img {
-          transform: rotate(15deg) scale(1.1);
+        .logo-img {
+          width: 140%;
+          max-height: 280%;
+          height: auto;
+          object-fit: contain;
+          object-position: center;
+          transition: transform 0.25s ease;
+          display: block;
         }
 
-        .brand-text {
-          font-size: 1.6rem;
-          font-weight: 800;
-          color: #1a1a1a;
-          /* Shimmer Text */
-          background: linear-gradient(to right, #1a1a1a 20%, #3b82f6 50%, #1a1a1a 80%);
-          background-size: 200% auto;
-          background-clip: text;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: shimmerText 5s infinite linear;
-        }
-
-        body.dark .brand-text {
-          /* Gold/White Shimmer for Dark Mode */
-          background: linear-gradient(to right, #ffffff 20%, #ffd700 50%, #ffffff 80%);
-          background-clip: text;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        @keyframes shimmerText {
-          to { background-position: 200% center; }
+        .wb-brand:hover .logo-img {
+          transform: scale(1.015);
         }
 
         /* --- NAV LINKS --- */
@@ -275,6 +278,11 @@ const Navbar = () => {
         .mobile-close { display: none; }
 
         @media (max-width: 900px) {
+          .logo-wrapper {
+            width: 190px;
+            height: 50px;
+          }
+
           .wb-hamburger { display: block; }
 
           .wb-nav {

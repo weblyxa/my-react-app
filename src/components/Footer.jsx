@@ -1,13 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FaFacebookF,
   FaInstagram,
   FaLinkedinIn,
   FaTwitter,
-  FaPaperPlane
+  FaPaperPlane,
+  FaWhatsappSquare
 } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa6";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("");
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus("Sending...");
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/weblyxa@gmail.com", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: "New Newsletter Subscriber!",
+          Email: email,
+          message: `A new user has subscribed to the newsletter. Their email is: ${email}`
+        })
+      });
+
+      if (response.ok) {
+        setStatus("Subscribed!");
+        setEmail("");
+        setTimeout(() => setStatus(""), 3000);
+      } else {
+        setStatus("Error. Try again.");
+        setTimeout(() => setStatus(""), 3000);
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus("Error. Try again.");
+      setTimeout(() => setStatus(""), 3000);
+    }
+  };
+
   return (
     <footer className="footer-wrapper">
       {/* ANIMATED BACKGROUND BLOBS (Aurora) */}
@@ -15,22 +54,40 @@ const Footer = () => {
       <div className="footer-blob blob-2"></div>
 
       <div className="footer-container">
-        
+
         {/* COL 1: BRAND */}
         <div className="footer-col brand-col">
           <h2 className="footer-logo">
-            Weblyxa<span className="dot">.</span>
+            Weblyxa<span className="dot"></span>
           </h2>
           <p className="footer-desc">
-            We craft digital masterpieces. Turning complex ideas into 
+            We craft digital masterpieces. Turning complex ideas into
             stunning, high-performance websites that grow your business.
           </p>
-          
-          <div className="newsletter-box">
-            <input type="email" placeholder="Enter your email" />
-            <button aria-label="Subscribe"><FaPaperPlane /></button>
-          </div>
+
+          <form className="newsletter-box" onSubmit={handleSubscribe}>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <button type="submit" aria-label="Subscribe" disabled={status === "Sending..."}>
+              {status === "Sending..." ? "..." : <FaPaperPlane />}
+            </button>
+          </form>
+          {status && (
+            <p style={{
+              fontSize: "0.9rem",
+              color: status === "Subscribed!" ? "#10b981" : "#ef4444",
+              marginTop: "10px"
+            }}>
+              {status}
+            </p>
+          )}
         </div>
+
 
         {/* COL 2: EXPLORE */}
         <div className="footer-col">
@@ -48,7 +105,7 @@ const Footer = () => {
           <h3>Get in Touch</h3>
           <ul className="contact-list">
             <li>New Delhi, India</li>
-            <li><a href="mailto:hello@weblyxa.in">hello@weblyxa.in</a></li>
+            <li><a href="mailto:weblyxa@gmail.com">weblyxa@gmail.com</a></li>
             <li><a href="tel:+918516012270">+91 85160 12270</a></li>
           </ul>
         </div>
@@ -58,9 +115,9 @@ const Footer = () => {
           <h3>Follow Us</h3>
           <div className="social-grid">
             <a href="#" className="social-icon fb"><FaFacebookF /></a>
-            <a href="#" className="social-icon insta"><FaInstagram /></a>
+            <a href="https://www.instagram.com/weblyxa/" className="social-icon insta"><FaInstagram /></a>
             <a href="#" className="social-icon linkedin"><FaLinkedinIn /></a>
-            <a href="#" className="social-icon tw"><FaTwitter /></a>
+            <a href="https://wa.me/918516012270" className="social-icon wa"><FaWhatsapp /></a>
           </div>
         </div>
       </div>
@@ -243,7 +300,7 @@ const Footer = () => {
         .social-icon.fb:hover { background: #1877f2; border-color: #1877f2; }
         .social-icon.insta:hover { background: #e4405f; border-color: #e4405f; }
         .social-icon.linkedin:hover { background: #0a66c2; border-color: #0a66c2; }
-        .social-icon.tw:hover { background: #1da1f2; border-color: #1da1f2; }
+        .social-icon.wa:hover { background: #25D366; border-color: #25D366; }
 
         .social-icon:hover {
           transform: translateY(-8px) rotate(360deg);

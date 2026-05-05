@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { 
@@ -9,9 +9,27 @@ import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
 const Services = () => {
+  const [activeService, setActiveService] = useState(null);
+
   useEffect(() => {
     AOS.init({ duration: 1000, easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)", once: true });
   }, []);
+
+  useEffect(() => {
+    if (!activeService) return;
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") setActiveService(null);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [activeService]);
 
   return (
     <>
@@ -183,6 +201,7 @@ const Services = () => {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+          cursor: pointer;
         }
 
         /* Dynamic Service Colors */
@@ -199,6 +218,11 @@ const Services = () => {
           transform: translateY(-15px);
           border-color: transparent;
           box-shadow: 0 30px 60px -10px var(--s-color), 0 0 0 1px var(--s-color) inset;
+        }
+
+        .service-card:focus-visible {
+          outline: 3px solid var(--s-color);
+          outline-offset: 4px;
         }
 
         .service-card::before {
@@ -255,6 +279,93 @@ const Services = () => {
           font-size: 1.1rem;
           color: var(--text-sub);
           line-height: 1.6;
+        }
+
+        /* --- SERVICE POPUP --- */
+        .service-modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(2, 6, 23, 0.75);
+          backdrop-filter: blur(4px);
+          display: grid;
+          place-items: center;
+          z-index: 11000;
+          padding: 1.25rem;
+        }
+
+        .service-modal {
+          width: min(920px, 100%);
+          background: rgba(255, 255, 255, 0.98);
+          border: 1px solid rgba(15, 23, 42, 0.1);
+          border-radius: 22px;
+          overflow: hidden;
+          box-shadow: 0 30px 80px rgba(2, 6, 23, 0.35);
+          animation: modalIn 0.25s ease;
+        }
+
+        body.dark .service-modal {
+          background: rgba(15, 23, 42, 0.98);
+          border-color: rgba(148, 163, 184, 0.25);
+        }
+
+        @keyframes modalIn {
+          from { opacity: 0; transform: translateY(14px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .service-modal-img {
+          width: auto;
+          max-width: 100%;
+          height: auto;
+          max-height: 70vh;
+          object-fit: contain;
+          display: block;
+          margin: 0 auto;
+          background: rgba(15, 23, 42, 0.04);
+        }
+
+        .service-modal-content {
+          padding: 1.3rem 1.35rem 1.5rem;
+          color: var(--text-main);
+        }
+
+        .service-modal-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.8rem;
+          margin-bottom: 0.75rem;
+        }
+
+        .service-modal-header h3 {
+          margin: 0;
+          font-size: 1.4rem;
+          font-weight: 800;
+          color: var(--text-main);
+        }
+
+        .service-modal-close {
+          border: none;
+          border-radius: 10px;
+          width: 36px;
+          height: 36px;
+          background: rgba(15, 23, 42, 0.08);
+          color: #0f172a;
+          font-size: 1.35rem;
+          line-height: 1;
+          cursor: pointer;
+        }
+
+        body.dark .service-modal-close {
+          background: rgba(255, 255, 255, 0.12);
+          color: #f8fafc;
+        }
+
+        .service-modal-content p {
+          margin: 0;
+          color: var(--text-sub);
+          line-height: 1.65;
+          font-size: 1rem;
         }
 
         /* --- PROCESS SECTION (Corrected Alignment) --- */
@@ -449,6 +560,15 @@ const Services = () => {
                 className="service-card"
                 data-aos="fade-up"
                 data-aos-delay={i * 100}
+                role="button"
+                tabIndex={0}
+                onClick={() => setActiveService(service)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setActiveService(service);
+                  }
+                }}
               >
                 <div className="icon-box">{service.icon}</div>
                 <div>
@@ -459,6 +579,41 @@ const Services = () => {
             ))}
           </div>
         </section>
+
+        {activeService && (
+          <div
+            className="service-modal-overlay"
+            onClick={() => setActiveService(null)}
+            role="presentation"
+          >
+            <div
+              className="service-modal"
+              onClick={(event) => event.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${activeService.title} preview`}
+            >
+              <img
+                src={activeService.image}
+                alt={activeService.title}
+                className="service-modal-img"
+              />
+              <div className="service-modal-content">
+                <div className="service-modal-header">
+                  <h3>{activeService.title}</h3>
+                  <button
+                    className="service-modal-close"
+                    onClick={() => setActiveService(null)}
+                    aria-label="Close preview"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <p>{activeService.desc}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* PROCESS (Fixed Badges) */}
         <section className="process">
@@ -501,42 +656,50 @@ const services = [
   { 
     icon: <FaPaintBrush />, 
     title: "UI / UX Design", 
-    desc: "Clean, modern design systems that combine psychology and art to convert visitors into loyal customers." 
+    desc: "Clean, modern design systems that combine psychology and art to convert visitors into loyal customers.",
+    image: "/services/ui_ ux design banner_.jpg.jpeg"
   },
   { 
     icon: <FaCode />, 
     title: "Web Development", 
-    desc: "Robust, scalable, and lightning-fast websites built with React, Next.js, and modern technologies." 
+    desc: "Robust, scalable, and lightning-fast websites built with React, Next.js, and modern technologies.",
+    image: "/services/web devlopment post.jpg.jpeg"
   },
   { 
     icon: <FaBullhorn />, 
     title: "Digital Marketing", 
-    desc: "Data-driven SEO, Google Ads, and social media strategies focused on high ROI and growth." 
+    desc: "Data-driven SEO, Google Ads, and social media strategies focused on high ROI and growth.",
+    image: "/services/digital marketing poster.jpg.jpeg"
   },
   { 
     icon: <FaLayerGroup />, 
     title: "Brand Strategy", 
-    desc: "We craft your brand's voice, visual identity, and positioning to make you unforgettable." 
+    desc: "We craft your brand's voice, visual identity, and positioning to make you unforgettable.",
+    image: "/services/brand strategy .jpg.jpeg"
   },
   { 
     icon: <FaVideo />, 
     title: "Video Editing", 
-    desc: "Professional cinematic editing, motion graphics, and reels that capture attention instantly." 
+    desc: "Professional cinematic editing, motion graphics, and reels that capture attention instantly.",
+    image: "/services/video editing .jpg.jpeg"
   },
   { 
     icon: <FaMobileAlt />, 
     title: "App Development", 
-    desc: "Native and cross-platform mobile apps designed for seamless performance on iOS and Android." 
+    desc: "Native and cross-platform mobile apps designed for seamless performance on iOS and Android.",
+    image: "/services/app devlopment .jpg.jpeg"
   },
   { 
     icon: <FaPenNib />, 
     title: "Content Writing", 
-    desc: "Persuasive copywriting and blogs that tell your story and rank high on search engines." 
+    desc: "Persuasive copywriting and blogs that tell your story and rank high on search engines.",
+    image: "/services/content writing .jpg.jpeg"
   },
   { 
     icon: <FaTools />, 
     title: "Maintenance", 
-    desc: "24/7 monitoring, security updates, and performance optimization to keep your site running smoothly." 
+    desc: "24/7 monitoring, security updates, and performance optimization to keep your site running smoothly.",
+    image: "/services/maintenence .jpg.jpeg"
   },
 ];
 
