@@ -373,12 +373,12 @@ const About = () => {
           <div className="story-content" data-aos="fade-right">
             <h2>Who We Are</h2>
             <p>
-              Weblyxa isn't just an agency; we are your growth partners. Founded 
+              Weblyxa isn't just an agency; we are your growth partners. Founded
               on the belief that design should be functional and code should be beautiful.
             </p>
             <p>
               From UI/UX design to full-stack development and growth marketing,
-              we partner with brands to create real impact. We don't just build websites; 
+              we partner with brands to create real impact. We don't just build websites;
               we build businesses.
             </p>
           </div>
@@ -417,7 +417,7 @@ const About = () => {
         </section>
 
         {/* TEAM */}
-        <section className="team">
+        {/* <section className="team">
           <h2 data-aos="fade-up">Meet The Minds</h2>
           <div className="team-grid">
             {[
@@ -453,7 +453,7 @@ const About = () => {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* CTA */}
         <section className="cta" data-aos="fade-up">
