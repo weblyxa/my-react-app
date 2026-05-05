@@ -8,6 +8,7 @@ import {
   FaWhatsappSquare
 } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa6";
+import lightLogo from "../assets/weblyxa-logo-light-transparent.png";
 
 const Footer = () => {
   const [email, setEmail] = useState("");

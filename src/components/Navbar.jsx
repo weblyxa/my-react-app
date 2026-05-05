@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { BsSun, BsMoonStars } from "react-icons/bs"; // Icons for Dark Mode
-import lightLogo from "../assets/weblyxa-logo-light.png";
-import darkLogo from "../assets/weblyxa-logo-dark.png";
+import lightLogo from "../assets/weblyxa-logo-light-transparent.png";
+import darkLogo from "../assets/weblyxa-logo-dark-transparent.png";
 
 const THEME_KEY = "weblyxa-theme";
 
