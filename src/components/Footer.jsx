@@ -14,6 +14,7 @@ const Footer = () => {
   const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email) return;
+
     setStatus("Sending...");
 
     try {
@@ -26,7 +27,7 @@ const Footer = () => {
         body: JSON.stringify({
           _subject: "New Newsletter Subscriber!",
           Email: email,
-          message: `A new user has subscribed: ${email}`
+          message: `A new user subscribed: ${email}`
         })
       });
 
@@ -37,23 +38,24 @@ const Footer = () => {
       } else {
         setStatus("Error. Try again.");
       }
-    } catch (error) {
+    } catch {
       setStatus("Error. Try again.");
     }
   };
 
   return (
     <footer className="footer-wrapper">
-      {/* Background blobs */}
+
+      {/* BLOBS */}
       <div className="footer-blob blob-1"></div>
       <div className="footer-blob blob-2"></div>
 
       <div className="footer-container">
 
         {/* BRAND */}
-        <div className="footer-col">
+        <div className="footer-col brand-col">
           <h2 className="footer-logo">
-            Weblyxa<span className="dot">.</span>
+            Weblyxa<span className="dot"></span>
           </h2>
 
           <p className="footer-desc">
@@ -64,12 +66,12 @@ const Footer = () => {
           <form className="newsletter-box" onSubmit={handleSubscribe}>
             <input
               type="email"
-              placeholder="Enter your email for updates"
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button type="submit" disabled={status === "Sending..."}>
+            <button type="submit">
               {status === "Sending..." ? "..." : <FaPaperPlane />}
             </button>
           </form>
@@ -84,7 +86,7 @@ const Footer = () => {
         {/* EXPLORE */}
         <div className="footer-col">
           <h3>Explore</h3>
-          <ul>
+          <ul className="footer-links">
             <li><a href="#">Home</a></li>
             <li><a href="#">About</a></li>
             <li><a href="#">Services</a></li>
@@ -95,7 +97,7 @@ const Footer = () => {
         {/* CONTACT */}
         <div className="footer-col">
           <h3>Contact</h3>
-          <ul>
+          <ul className="contact-list">
             <li>New Delhi, India</li>
             <li><a href="mailto:weblyxa@gmail.com">weblyxa@gmail.com</a></li>
             <li><a href="tel:+918516012270">+91 85160 12270</a></li>
@@ -105,50 +107,53 @@ const Footer = () => {
         {/* SOCIAL */}
         <div className="footer-col">
           <h3>Follow</h3>
-          <div className="socials">
-            <a href="#"><FaFacebookF /></a>
-            <a href="https://www.instagram.com/weblyxa/"><FaInstagram /></a>
-            <a href="#"><FaLinkedinIn /></a>
-            <a href="https://wa.me/918516012270"><FaWhatsapp /></a>
+          <div className="social-grid">
+            <a href="#" className="social-icon fb"><FaFacebookF /></a>
+            <a href="https://www.instagram.com/weblyxa/" className="social-icon insta"><FaInstagram /></a>
+            <a href="#" className="social-icon linkedin"><FaLinkedinIn /></a>
+            <a href="https://wa.me/918516012270" className="social-icon tw"><FaWhatsapp /></a>
           </div>
         </div>
 
       </div>
 
-      {/* Bottom */}
       <div className="footer-bottom">
         © 2026 Weblyxa Agency. Made with 💙 in India.
       </div>
 
       {/* STYLES */}
       <style>{`
+
         .footer-wrapper {
           background: #0f172a;
           color: #e2e8f0;
-          padding: 5rem 8% 2rem;
+          padding: 6rem 8% 2rem;
           position: relative;
           overflow: hidden;
           border-top-left-radius: 60px;
           border-top-right-radius: 60px;
         }
 
-        .footer-container {
-          display: grid;
-          grid-template-columns: 1.5fr 1fr 1fr 1fr;
-          gap: 3rem;
-          position: relative;
-          z-index: 2;
-        }
-
+        /* LOGO FIX (IMPORTANT 🔥) */
         .footer-logo {
-          font-size: 2.3rem;
+          font-size: 2.5rem;
           font-weight: 800;
-          color: white;
-          text-shadow: 0 0 20px rgba(59,130,246,0.3);
+          background: linear-gradient(135deg, #3b82f6, #a855f7);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin-bottom: 1rem;
         }
 
         .dot {
           color: #3b82f6;
+        }
+
+        .footer-container {
+          display: grid;
+          grid-template-columns: 1.8fr 1fr 1fr 1fr;
+          gap: 3rem;
+          position: relative;
+          z-index: 2;
         }
 
         .footer-desc {
@@ -162,22 +167,26 @@ const Footer = () => {
           margin-bottom: 1rem;
         }
 
-        ul {
+        .footer-links,
+        .contact-list {
           list-style: none;
           padding: 0;
         }
 
-        ul li {
+        .footer-links li,
+        .contact-list li {
           margin-bottom: 10px;
         }
 
-        ul a {
+        .footer-links a,
+        .contact-list a {
           color: #94a3b8;
           text-decoration: none;
         }
 
-        ul a:hover {
+        .footer-links a:hover {
           color: #3b82f6;
+          transform: translateX(6px);
         }
 
         .newsletter-box {
@@ -214,29 +223,30 @@ const Footer = () => {
         .success { color: #10b981; }
         .error { color: #ef4444; }
 
-        .socials {
+        .social-grid {
           display: flex;
-          gap: 10px;
+          gap: 12px;
         }
 
-        .socials a {
-          width: 40px;
-          height: 40px;
+        .social-icon {
+          width: 45px;
+          height: 45px;
+          background: rgba(255,255,255,0.05);
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba(255,255,255,0.05);
-          border-radius: 10px;
           color: white;
+          transition: 0.4s;
         }
 
-        .socials a:hover {
+        .social-icon:hover {
+          transform: translateY(-6px) rotate(360deg);
           background: #3b82f6;
-          transform: translateY(-5px);
         }
 
         .footer-bottom {
-          margin-top: 3rem;
+          margin-top: 4rem;
           text-align: center;
           font-size: 0.9rem;
           color: #64748b;
@@ -244,8 +254,8 @@ const Footer = () => {
 
         .footer-blob {
           position: absolute;
-          width: 400px;
-          height: 400px;
+          width: 450px;
+          height: 450px;
           border-radius: 50%;
           filter: blur(100px);
           opacity: 0.15;
@@ -269,10 +279,11 @@ const Footer = () => {
             text-align: center;
           }
 
-          .socials {
+          .social-grid {
             justify-content: center;
           }
         }
+
       `}</style>
     </footer>
   );
