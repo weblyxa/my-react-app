@@ -8,6 +8,7 @@ import {
   FaWhatsappSquare
 } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa6";
+import lightLogo from "../assets/weblyxa-logo-light-transparent.png";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -57,8 +58,8 @@ const Footer = () => {
 
         {/* COL 1: BRAND */}
         <div className="footer-col brand-col">
-          <h2 className="footer-logo">
-            Weblyxa<span className="dot"></span>
+          <h2 className="footer-logo" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={lightLogo} alt="Weblyxa Logo" style={{ maxWidth: '200px', height: 'auto', objectFit: 'contain' }} />
           </h2>
           <p className="footer-desc">
             We craft digital masterpieces. Turning complex ideas into
